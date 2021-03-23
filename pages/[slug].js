@@ -1,19 +1,21 @@
 import Head from 'next/head'
 var md = require('markdown-it')();
+import styles from '../styles/Post.module.css'
 
 export default function Post({ post }) {
     return (
         <>
             <Head>
-                <title>{post.title} | Lipinski</title>
+                <title>{post.title ?? 'Not found'} | Lipinski</title>
             </Head>
 
-            <h1>{post.title}</h1>
-            <span>{post.created_at}</span>
+            {post ? <div className={styles.post_container}>
+                <h1 className={styles.post_title}>{post.title}</h1>
+                
+                <small className={styles.post_metadata}>{post.created_at} • {post.timing}</small> 
 
-            <small>3 min read</small>
-
-            <div dangerouslySetInnerHTML={{ __html: post.content }}/>
+                <div className={styles.post_content} dangerouslySetInnerHTML={{ __html: post.content }}/>
+            </div> : null}
         </>
     )
 }
@@ -42,7 +44,14 @@ export async function getStaticProps({ params }) {
 
     const post = data[0]
 
-    post.content = md.render(post.content);
+    post.created_at = new Date(post.created_at).toLocaleDateString('en-US', {
+        day: 'numeric',
+        weekday: 'long',
+        month: 'long',
+        year: 'numeric',
+    })
+
+    post.content = md.render(post.content)
 
     return {
         props: { post }
