@@ -6,7 +6,7 @@ export default function Post({ post }) {
     return (
         <>
             <Head>
-                <title>{post.title ?? 'Not found'} | Lipinski</title>
+                <title>{post ? `${post.title} | Lipinski` : 'Not found | Lipinski'}</title>
             </Head>
 
             {post ? <div className={styles.post_container}>
